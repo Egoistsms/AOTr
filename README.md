@@ -142,10 +142,8 @@ RunService.Stepped:Connect(function(_, deltaTime)
 
         local maxRefills = player:GetAttribute("Max_Refills")
         local refills = player:GetAttribute("Refills")
-        if maxRefills and refills and (maxRefills <= 1 or refills <= 1) then
-            player:SetAttribute("Max_Refills", 1)
-            player:SetAttribute("Refills", 1)
-        end
+        player:SetAttribute("Max_Refills", 2)
+        player:SetAttribute("Refills", 2)
     end)
 end)
 
