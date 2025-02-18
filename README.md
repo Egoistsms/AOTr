@@ -163,7 +163,11 @@ spawn(function()
     end
 end)
 
-if queue_on_teleport then
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
-end
+local tpcheck = false
+player.OnTeleport:Connect(function(State)
+	if not tpcheck and queue_on_teleport then
+		tpcheck = true
+		queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Egoistsms/AOTr/refs/heads/main/README.md'))()")
+	end
+end)
 --humanoid.Health = 0
