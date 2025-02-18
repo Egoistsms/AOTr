@@ -192,11 +192,11 @@ spawn(function()
     end
 end)
 
---[[local tpcheck = false
+local tpcheck = false
 player.OnTeleport:Connect(function(State)
 	if not tpcheck and queue_on_teleport then
 		tpcheck = true
 		queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Egoistsms/AOTr/refs/heads/main/README.md'))()")
 	end
-end)]]
+end)
 --humanoid.Health = 0
