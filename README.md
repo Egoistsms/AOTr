@@ -113,21 +113,22 @@ local function autoFarm()
         if titanHumanoid and titanHumanoid.Health > 0 and hitbox then
             local nape = hitbox:FindFirstChild("Hit") and hitbox.Hit:FindFirstChild("Nape")
             if nape then
-                local key = checkcd()
+                --[[local key = checkcd()
                 if key then
                     expandHitbox(Vector3.new(99999, 99999, 99999))
                     rootPart.CFrame = nape.CFrame * CFrame.new(0, 350, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                     VirtualInputManager:SendKeyEvent(true, key, false, game)
                     task.wait(0.1)
                     VirtualInputManager:SendKeyEvent(false, key, false, game)
-                else
-                    expandHitbox(Vector3.new(700, 700, 700))
-                    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-                    task.wait()
-                    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
-                    rootPart.CFrame = CFrame.new(nape.Position + Vector3.new(0, 350, 0)) * CFrame.Angles(math.rad(-90), 0, 0)
-                end
+                else]]
+                expandHitbox(Vector3.new(700, 700, 700))
+                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+                task.wait()
+                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+                rootPart.CFrame = CFrame.new(nape.Position + Vector3.new(0, 350, 0)) * CFrame.Angles(math.rad(-90), 0, 0)
                 task.wait(3)
+                rootPart.CFrame = CFrame.new(nape.Position + Vector3.new(0, 700, 0)) * CFrame.Angles(math.rad(-90), 0, 0)
+                --end
                 break
             end
         end
