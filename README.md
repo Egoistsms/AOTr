@@ -54,9 +54,9 @@ local function checkCooldown()
     for skillLabel, key in pairs(skillcd) do
         if skillLabel and skillLabel.Text then
             local cooldownText = skillLabel.Text
-            if cooldownText ~= "1s" and firstdoing == true then
+            if firstdoing then
                 return key
-            elseif cooldownText == "1s" and firstdoing == false then
+            elseif cooldownText == "1s" then
                 return key
             end
         end
@@ -167,7 +167,7 @@ local function autoFarm()
                     task.wait(0.1)
                     VirtualInputManager:SendKeyEvent(false, key, false, game)
                     task.wait(3)
-                    rootPart.CFrame = nape.CFrame + CFrame.new(0, 700, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+                    rootPart.CFrame = nape.CFrame * CFrame.new(0, 700, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                     firstdoing = false
                 else
                     expandHitbox(Vector3.new(700, 700, 700))
