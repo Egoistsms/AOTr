@@ -54,7 +54,9 @@ local function checkCooldown()
     for skillLabel, key in pairs(skillcd) do
         if skillLabel and skillLabel.Text then
             local cooldownText = skillLabel.Text
-            if cooldownText ~= "1s" or firstdoing == true then
+            if cooldownText ~= "1s" and firstdoing == true then
+                return key
+            elseif cooldownText == "1s" and firstdoing == false then
                 return key
             end
         end
