@@ -191,11 +191,11 @@ RunService.Stepped:Connect(function(_, deltaTime)
     if not isEnabled then return end
 
     pcall(function()
+        checkCooldown()
         autoFarm()
         autoEscape()
         autoRefill()
         autoReplay()
-        checkCooldown()
 
         local maxRefills = player:GetAttribute("Max_Refills")
         local refills = player:GetAttribute("Refills")
