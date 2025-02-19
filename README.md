@@ -164,12 +164,12 @@ local function autoFarm()
                 local key = checkCooldown()
                 if key or firstdoing == true then
                     expandHitbox(Vector3.new(9999999, 9999999, 9999999))
-                    rootPart.CFrame = nape.CFrame * CFrame.new(0, 350, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+                    rootPart.CFrame =  CFrame.new(nape.CFrame + CFrame.new(0, 350, 0)) * CFrame.Angles(math.rad(-90), 0, 0)
                     VirtualInputManager:SendKeyEvent(true, key, false, game)
                     task.wait(0.1)
                     VirtualInputManager:SendKeyEvent(false, key, false, game)
                     task.wait(3)
-                    rootPart.CFrame = nape.CFrame * CFrame.new(0, 700, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+                    rootPart.CFrame = CFrame.new(nape.CFrame + CFrame.new(0, 700, 0)) * CFrame.Angles(math.rad(-90), 0, 0)
                     firstdoing = false
                 else
                     expandHitbox(Vector3.new(700, 700, 700))
