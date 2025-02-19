@@ -158,7 +158,7 @@ local function autoFarm()
             if nape then
                 local key = checkCooldown()
                 if key then
-                    expandHitbox(Vector3.new(5000, 5000, 5000))
+                    expandHitbox(Vector3.new(9999999, 9999999, 9999999))
                     rootPart.CFrame = nape.CFrame * CFrame.new(0, 350, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                     VirtualInputManager:SendKeyEvent(true, key, false, game)
                     task.wait(0.1)
