@@ -1,6 +1,6 @@
 if not game:IsLoaded() then
     local notLoaded = Instance.new("Message")
-    notLoaded.Parent = COREGUI
+    notLoaded.Parent = game:GetService("CoreGui")
     notLoaded.Text = "MAD_GYATT is waiting for the game to load"
     game.Loaded:Wait()
     notLoaded:Destroy()
@@ -13,31 +13,49 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local player = Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid", 5)
-local rootPart = character:WaitForChild("HumanoidRootPart", 5)
-local mobFolder = Workspace:FindFirstChild("Titans")
+if not player then error("LocalPlayer not found!") end
 
-local playerGui = player:WaitForChild("PlayerGui", 5)
-local interface = playerGui:WaitForChild("Interface", 5)
-local hotbar = interface:FindFirstChild("HUD") and interface.HUD:FindFirstChild("Main") and interface.HUD.Main:FindFirstChild("Top") and interface.HUD.Main.Top:FindFirstChild("Hotbar")
-local buttons = interface:WaitForChild("Buttons", 5)
-local bladescount = interface:FindFirstChild("HUD") and interface.HUD:FindFirstChild("Main") and interface.HUD.Main:FindFirstChild("Top") and interface.HUD.Main.Top:FindFirstChild("Blades") and interface.HUD.Main.Top.Blades:FindFirstChild("Sets")
-local retryButton = interface:FindFirstChild("Rewards") and interface.Rewards:FindFirstChild("Main") and interface.Rewards.Main:FindFirstChild("Info") and interface.Rewards.Main.Info.Main:FindFirstChild("Buttons") and interface.Rewards.Main.Info.Main.Buttons:FindFirstChild("Retry")
+local function waitForChildSafe(parent, childName, timeout)
+    local child = parent:FindFirstChild(childName)
+    if child then return child end
+    local success, result = pcall(function()
+        return parent:WaitForChild(childName, timeout or 5)
+    end)
+    return (success and result) or nil
+end
+
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = waitForChildSafe(character, "Humanoid", 5)
+local rootPart = waitForChildSafe(character, "HumanoidRootPart", 5)
+local mobFolder = Workspace:FindFirstChild("Titans")
+if not mobFolder then
+    warn("Titans folder not found in Workspace!")
+end
+
+local playerGui = waitForChildSafe(player, "PlayerGui", 5)
+local interface = waitForChildSafe(playerGui, "Interface", 5)
+local hotbar = (((interface:FindFirstChild("HUD") or {}):FindFirstChild("Main") or {}):FindFirstChild("Top") or {}):FindFirstChild("Hotbar")
+local buttons = waitForChildSafe(interface, "Buttons", 5)
+local bladescount = (((interface:FindFirstChild("HUD") or {}):FindFirstChild("Main") or {}):FindFirstChild("Top") or {}):FindFirstChild("Blades")
+bladescount = bladescount and bladescount:FindFirstChild("Sets")
+local retryButton = ((((interface:FindFirstChild("Rewards") or {}):FindFirstChild("Main") or {}):FindFirstChild("Info") or {}):FindFirstChild("Main") or {}):FindFirstChild("Buttons")
+retryButton = retryButton and retryButton:FindFirstChild("Retry")
 
 local isEnabled = true
 local refilling = false
 
 local skillcd = {
-    [hotbar.Skill_3.Cooldown.Label] = Enum.KeyCode.Three,
-    [hotbar.Skill_4.Cooldown.Label] = Enum.KeyCode.Four
+    [hotbar and hotbar:FindFirstChild("Skill_3") and hotbar.Skill_3:FindFirstChild("Cooldown") and hotbar.Skill_3.Cooldown:FindFirstChild("Label")] = Enum.KeyCode.Three,
+    [hotbar and hotbar:FindFirstChild("Skill_4") and hotbar.Skill_4:FindFirstChild("Cooldown") and hotbar.Skill_4.Cooldown:FindFirstChild("Label")] = Enum.KeyCode.Four
 }
 
-local function checkcd()
+local function checkCooldown()
     for skillLabel, key in pairs(skillcd) do
-        local cooldownText = skillLabel.Text
-        if cooldownText == "1s" or cooldownText == "90s" then
-            return key 
+        if skillLabel and skillLabel.Text then
+            local cooldownText = skillLabel.Text
+            if cooldownText == "1s" or cooldownText == "90s" then
+                return key
+            end
         end
     end
     return nil
@@ -54,7 +72,9 @@ local function expandHitbox(size)
                 if nape then
                     for _, partName in ipairs({"Eyes", "LeftArm", "LeftLeg", "RightArm", "RightLeg"}) do
                         local part = hit:FindFirstChild(partName)
-                        if part then part:Destroy() end
+                        if part then
+                            pcall(function() part:Destroy() end)
+                        end
                     end
                     nape.Size = size
                     nape.Transparency = 0.96
@@ -71,9 +91,10 @@ end
 local function autoEscape()
     if not buttons then return end
     for _, button in ipairs(buttons:GetChildren()) do
-        VirtualInputManager:SendKeyEvent(true, string.sub(tostring(button), 1, 1), false, game)
+        local keyName = tostring(button):sub(1, 1)
+        VirtualInputManager:SendKeyEvent(true, keyName, false, game)
         task.wait(0.01)
-        VirtualInputManager:SendKeyEvent(false, string.sub(tostring(button), 1, 1), false, game)
+        VirtualInputManager:SendKeyEvent(false, keyName, false, game)
     end
 end
 
@@ -84,13 +105,18 @@ local function autoRefill()
     local unclimbable = Workspace:FindFirstChild("Unclimbable")
     local reloadsFolder = unclimbable and unclimbable:FindFirstChild("Reloads")
     local refillPoint = reloadsFolder and reloadsFolder:GetChildren()[1] and reloadsFolder:GetChildren()[1]:FindFirstChild("Refill")
+    if not refillPoint then return end
+
     for _, hand in ipairs(rig:GetChildren()) do
         if hand.Name == "RightHand" or hand.Name == "LeftHand" then
             for _, blade in ipairs(hand:GetChildren()) do
                 if blade.Name == "Blade_1" then
-                    if blade:GetAttribute("Broken") and bladescount.Text == "0 / 3" and refillPoint then
+                    local isBroken = blade:GetAttribute("Broken")
+                    if isBroken and bladescount and bladescount.Text == "0 / 3" then
                         refilling = true
-                        rootPart.CFrame = CFrame.new(refillPoint.Position + Vector3.new(0, 0, 3))
+                        pcall(function()
+                            rootPart.CFrame = CFrame.new(refillPoint.Position + Vector3.new(0, 0, 3))
+                        end)
                         task.wait(0.5)
                         VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.R, false, game)
                         task.wait(0.1)
@@ -99,7 +125,7 @@ local function autoRefill()
                             refilling = false
                         end
                         return
-                    elseif blade:GetAttribute("Broken") then
+                    elseif isBroken then
                         VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.R, false, game)
                         task.wait(0.1)
                         VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.R, false, game)
@@ -120,22 +146,25 @@ local function autoReplay()
 end
 
 local function autoFarm()
-    if not mobFolder or not rootPart or not humanoid or humanoid.Health <= 0  or refilling == true then return end
+    if not mobFolder or not rootPart or not humanoid or humanoid.Health <= 0 or refilling == true then 
+        return 
+    end
+    
     for _, titan in ipairs(mobFolder:GetChildren()) do
         local titanHumanoid = titan:FindFirstChildOfClass("Humanoid")
         local hitbox = titan:FindFirstChild("Hitboxes")
         if titanHumanoid and titanHumanoid.Health > 0 and hitbox then
             local nape = hitbox:FindFirstChild("Hit") and hitbox.Hit:FindFirstChild("Nape")
             if nape then
-                --[[local key = checkcd()
-                if checkcd() then
+                local key = checkCooldown()
+                if key then
                     expandHitbox(Vector3.new(5000, 5000, 5000))
                     rootPart.CFrame = nape.CFrame * CFrame.new(0, 350, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                     VirtualInputManager:SendKeyEvent(true, key, false, game)
                     task.wait(0.1)
-                    VirtualInputManager:SendKeyEvent(false, key, false, game)
+                     VirtualInputManager:SendKeyEvent(false, key, false, game)
                     task.wait(3)
-                else]]
+                else
                     expandHitbox(Vector3.new(700, 700, 700))
                     VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
                     task.wait()
@@ -143,7 +172,7 @@ local function autoFarm()
                     rootPart.CFrame = CFrame.new(nape.Position + Vector3.new(0, 350, 0)) * CFrame.Angles(math.rad(-90), 0, 0)
                     task.wait(3)
                     rootPart.CFrame = CFrame.new(nape.Position + Vector3.new(0, 700, 0)) * CFrame.Angles(math.rad(-90), 0, 0)
-                --end
+                end
                 break
             end
         end
@@ -152,15 +181,9 @@ end
 
 local function onCharacterAdded(newCharacter)
     character = newCharacter
-    humanoid = character:WaitForChild("Humanoid", 5)
-    rootPart = character:WaitForChild("HumanoidRootPart", 5)
+    humanoid = waitForChildSafe(character, "Humanoid", 5)
+    rootPart = waitForChildSafe(character, "HumanoidRootPart", 5)
 end
-
---[[local function bypass()
-    player.PlayerScripts.Baka.Disable = true
-    ReplicatedStorage.Assets.Remotes:Destroy()
-end]]
-    
 player.CharacterAdded:Connect(onCharacterAdded)
 
 RunService.Stepped:Connect(function(_, deltaTime)
@@ -171,16 +194,16 @@ RunService.Stepped:Connect(function(_, deltaTime)
         autoEscape()
         autoRefill()
         autoReplay()
-        checkcd()
+        checkCooldown()
 
         local maxRefills = player:GetAttribute("Max_Refills")
         local refills = player:GetAttribute("Refills")
-        player:SetAttribute("Max_Refills", 2)
-        player:SetAttribute("Refills", 2)
+        if maxRefills ~= 2 then player:SetAttribute("Max_Refills", 2) end
+        if refills ~= 2 then player:SetAttribute("Refills", 2) end
     end)
 end)
 
-_G.Enable = true -- false / true
+_G.Enable = true
 isEnabled = _G.Enable
 
 spawn(function()
@@ -194,9 +217,8 @@ end)
 
 local tpcheck = false
 player.OnTeleport:Connect(function(State)
-	if not tpcheck and queue_on_teleport then
-		tpcheck = true
-		queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Egoistsms/AOTr/refs/heads/main/README.md'))()")
-	end
+    if not tpcheck and queue_on_teleport then
+        tpcheck = true
+        queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Egoistsms/AOTr/refs/heads/main/README.md'))()")
+    end
 end)
---humanoid.Health = 0
