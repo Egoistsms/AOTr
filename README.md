@@ -56,6 +56,8 @@ local function checkCooldown()
             local cooldownText = skillLabel.Text
             if firstdoing then
                 return key
+            elseif cooldownText == "90s" then
+                return key
             elseif cooldownText == "1s" then
                 return key
             end
