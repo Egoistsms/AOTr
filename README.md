@@ -43,6 +43,7 @@ retryButton = retryButton and retryButton:FindFirstChild("Retry")
 
 local isEnabled = true
 local refilling = false
+local firstdoing = true
 
 local skillcd = {
     [hotbar and hotbar:FindFirstChild("Skill_3") and hotbar.Skill_3:FindFirstChild("Cooldown") and hotbar.Skill_3.Cooldown:FindFirstChild("Label")] = Enum.KeyCode.Three,
@@ -53,7 +54,10 @@ local function checkCooldown()
     for skillLabel, key in pairs(skillcd) do
         if skillLabel and skillLabel.Text then
             local cooldownText = skillLabel.Text
-            if cooldownText == "1s" or cooldownText == "90s" then
+            if cooldownText ~= "1s" and firstdoing == true then
+                firstdoing = false
+                return key
+            elseif cooldownText == "1s" and firstdoing == false then
                 return key
             end
         end
@@ -157,7 +161,7 @@ local function autoFarm()
             local nape = hitbox:FindFirstChild("Hit") and hitbox.Hit:FindFirstChild("Nape")
             if nape then
                 local key = checkCooldown()
-                if key then
+                if key or firstdoing == true then
                     expandHitbox(Vector3.new(9999999, 9999999, 9999999))
                     rootPart.CFrame = nape.CFrame * CFrame.new(0, 350, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                     VirtualInputManager:SendKeyEvent(true, key, false, game)
