@@ -319,8 +319,8 @@ end
 
 local TeleportCheck = false
 LocalPlayer.OnTeleport:Connect(function(State)
-	if not TeleportCheck and queueteleport then
-		TeleportCheck = true
-		queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Egoistsms/AOTr/refs/heads/main/README.md'))()")
-	end
+    if not TeleportCheck then
+        TeleportCheck = true
+        queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Egoistsms/AOTr/refs/heads/main/README.md'))()")
+    end
 end)
