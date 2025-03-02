@@ -4,7 +4,7 @@ getgenv().AutoRefill = true
 getgenv().AutoReplay = true
 getgenv().TitanRipper = true
 ]]
-task.wait(5)
+task.wait(2)
 
 local ws = game:GetService("Workspace")
 local plrs = game:GetService("Players")
