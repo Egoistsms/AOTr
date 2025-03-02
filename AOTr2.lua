@@ -116,7 +116,7 @@ local function delAnims()
 end
 
 local function doRefill()
-    if not _G.AutoRefill or not c.char then return end
+    if not _G.AutoRefill or  or not c.char then return end
     
     local rig = c.char:FindFirstChild("Rig_" .. c.lp.Name)
     if not rig then return end
@@ -127,7 +127,7 @@ local function doRefill()
                  (lh and lh:FindFirstChild("Blade_1"))
 
     if not blade then return end
-    updGUI()
+
     if blade:GetAttribute("Broken") then
         if c.gui.blades == "0 / 3" or c.gui.spears == "0 / 8" then
             c.refilling = true
@@ -144,7 +144,6 @@ local function doRefill()
                 task.wait()
                 vim:SendKeyEvent(false, Enum.KeyCode.R, false, game)
                 
-                updGUI()
                 if c.gui.blades ~= "0 / 3" or c.gui.spears ~= "0 / 8" then
                     c.refilling = false
                 end
@@ -159,7 +158,6 @@ end
 
 local function doReplay()
     if not _G.AutoReplay or not c.gui.retry or not c.gui.retry.Visible then return end
-    updGUI()
     if c.gui.retry.Visible then
         c.gui.retry.Size = UDim2.new(1000, 0, 1000, 0)
         vim:SendMouseButtonEvent(957, 800, 0, true, game, 0)
@@ -184,7 +182,7 @@ local function doFarm()
         if weld then weld:Destroy() end
 
         if #tt == 0 then return end
-        updGUI()
+
         if th and thrp and nape and th.Health > 0 and c.hrp then
             local hpos = thrp.Position
             local hcf = thrp.CFrame
@@ -204,7 +202,7 @@ end
 
 local function ripTitans()
     if not _G.TitanRipper or c.refilling or not c.hum or c.hum.Health <= 0 or not c.tf or not c.gui.itf then return end
-    updGUI()
+
     local s1cd, s2cd
     local hbpath = c.gui.itf:FindFirstChild("HUD") and 
                   c.gui.itf.HUD:FindFirstChild("Main") and 
@@ -268,7 +266,9 @@ rs.Stepped:Connect(function()
 
             c.lp:SetAttribute("Max_Refills", MAX_REFILLS)
             c.lp:SetAttribute("Refills", MAX_REFILLS)
-            
+            task.spawn(function()
+                updGUI()
+            end)
             rmNumFrames()
             delAnims()
             doReplay()
