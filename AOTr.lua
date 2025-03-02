@@ -1,8 +1,8 @@
 --[[
-getgenv().AutoFarm = true
-getgenv().AutoRefill = true
-getgenv().AutoReplay = true
-getgenv().TitanRipper = true
+_G.AutoFarm = true
+_G.AutoRefill = true
+_G.AutoReplay = true
+_G.TitanRipper = true
 ]]
 if not game:IsLoaded() then
     game.Loaded:Wait()
@@ -116,7 +116,7 @@ local function delAnims()
 end
 
 local function doRefill()
-    if not getgenv().AutoRefill or not c.char or c.refilling then return end
+    if not _G.AutoRefill or not c.char or c.refilling then return end
     
     local rig = c.char:FindFirstChild("Rig_" .. c.lp.Name)
     if not rig then return end
@@ -159,7 +159,7 @@ local function doRefill()
 end
 
 local function doReplay()
-    if not getgenv().AutoReplay or not c.gui.retry or not c.gui.retry.Visible then return end
+    if not _G.AutoReplay or not c.gui.retry or not c.gui.retry.Visible then return end
     if c.gui.retry.Visible then
         c.gui.retry.Size = UDim2.new(1000, 0, 1000, 0)
         vim:SendMouseButtonEvent(957, 800, 0, true, game, 0)
@@ -169,7 +169,7 @@ local function doReplay()
 end
 
 local function doFarm()
-    if not getgenv().AutoFarm or c.refilling or not c.hum or c.hum.Health <= 0 or not c.tf then return end
+    if not _G.AutoFarm or c.refilling or not c.hum or c.hum.Health <= 0 or not c.tf then return end
 
     for _, t in ipairs(c.tf:GetChildren()) do
         local th = t:FindFirstChildOfClass("Humanoid")
@@ -199,7 +199,7 @@ local function doFarm()
 end
 
 local function ripTitans()
-    if not getgenv().TitanRipper or c.refilling or not c.hum or c.hum.Health <= 0 or not c.tf or not c.gui.itf then return end
+    if not _G.TitanRipper or c.refilling or not c.hum or c.hum.Health <= 0 or not c.tf or not c.gui.itf then return end
     
     local s1cd, s2cd
     local hbpath = c.gui.itf:FindFirstChild("HUD") and 
@@ -381,13 +381,3 @@ _G.Settings = {
 	}
 }
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Egoistsms/AOTr/refs/heads/main/BOOSTFPS.lua"))()
-
-queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
-
-local TeleportCheck = false
-plrs.LocalPlayer.OnTeleport:Connect(function(State)
-	if not TeleportCheck and queueteleport then
-		TeleportCheck = true
-		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Egoistsms/AOTr/refs/heads/main/AOTr.lua'))()")
-	end
-end)
