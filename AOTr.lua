@@ -1,3 +1,9 @@
+--[[
+_G.AutoFarm = true
+_G.AutoRefill = true
+_G.AutoReplay = false
+_G.TitanRipper = true
+]]
 local ws = game:GetService("Workspace")
 local plrs = game:GetService("Players")
 local rs = game:GetService("RunService")
