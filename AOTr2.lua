@@ -137,7 +137,6 @@ local function doRefill()
             local rp = rf and rf:FindFirstChild("Refill")
             
             if rp and c.hrp then
-                local ocf = c.hrp.CFrame
                 c.hrp.CFrame = rp.CFrame
                 
                 vim:SendKeyEvent(true, Enum.KeyCode.R, false, game)
