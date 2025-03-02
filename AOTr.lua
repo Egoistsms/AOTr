@@ -1,7 +1,6 @@
---[[
-_G.AutoFarm = true
+--[[_G.AutoFarm = true
 _G.AutoRefill = true
-_G.AutoReplay = false
+_G.AutoReplay = true
 _G.TitanRipper = true
 ]]
 local ws = game:GetService("Workspace")
