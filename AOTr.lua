@@ -381,7 +381,7 @@ queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus 
 
 local TeleportCheck = false
 plrs.LocalPlayer.OnTeleport:Connect(function(State)
-	if ot TeleportCheck and queueteleport then
+	if not TeleportCheck and queueteleport then
 		TeleportCheck = true
 		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Egoistsms/AOTr/refs/heads/main/AOTr.lua'))()")
 	end
