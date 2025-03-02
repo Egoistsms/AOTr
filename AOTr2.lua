@@ -265,6 +265,8 @@ rs.Stepped:Connect(function()
             if not c.char or not c.hrp or not c.hum then updChar() end
             if not c.tf then updTitans() end
 
+            updGUI()
+            
             c.lp:SetAttribute("Max_Refills", MAX_REFILLS)
             c.lp:SetAttribute("Refills", MAX_REFILLS)
             
