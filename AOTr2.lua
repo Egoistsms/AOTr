@@ -13,7 +13,6 @@ local plrs = game:GetService("Players")
 local rs = game:GetService("RunService")
 local vim = game:GetService("VirtualInputManager")
 
-local REFILL_OFFSET = Vector3.new(0,0,3)
 local NAPE_OFFSET = Vector3.new(0,300,0)
 local MAX_REFILLS = 2
 
@@ -139,7 +138,7 @@ local function doRefill()
             
             if rp and c.hrp then
                 local ocf = c.hrp.CFrame
-                c.hrp.CFrame = CFrame.new(rp.Position + REFILL_OFFSET)
+                c.hrp.CFrame = rp.CFrame
                 
                 vim:SendKeyEvent(true, Enum.KeyCode.R, false, game)
                 task.wait()
@@ -266,7 +265,7 @@ rs.Stepped:Connect(function()
             if not c.tf then updTitans() end
 
             updGUI()
-            
+
             c.lp:SetAttribute("Max_Refills", MAX_REFILLS)
             c.lp:SetAttribute("Refills", MAX_REFILLS)
             
