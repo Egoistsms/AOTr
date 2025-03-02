@@ -116,7 +116,7 @@ local function delAnims()
 end
 
 local function doRefill()
-    if not _G.AutoRefill or  or not c.char then return end
+    if not _G.AutoRefill or not c.char then return end
     
     local rig = c.char:FindFirstChild("Rig_" .. c.lp.Name)
     if not rig then return end
