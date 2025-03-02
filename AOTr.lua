@@ -1,8 +1,11 @@
---[[_G.AutoFarm = true
+--[[
+_G.AutoFarm = true
 _G.AutoRefill = true
 _G.AutoReplay = true
 _G.TitanRipper = true
 ]]
+repeat task.wait() until game:IsLoaded()
+
 local ws = game:GetService("Workspace")
 local plrs = game:GetService("Players")
 local rs = game:GetService("RunService")
