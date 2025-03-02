@@ -14,7 +14,7 @@ local rs = game:GetService("RunService")
 local vim = game:GetService("VirtualInputManager")
 
 local NAPE_OFFSET = Vector3.new(0,300,0)
-local MAX_REFILLS = 2
+local MAX_REFILLS = 99
 
 local c = {
     lp = plrs.LocalPlayer,
