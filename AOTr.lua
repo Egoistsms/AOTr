@@ -4,13 +4,8 @@ getgenv().AutoRefill = true
 getgenv().AutoReplay = true
 getgenv().TitanRipper = true
 ]]
-
 if not game:IsLoaded() then
-    local notLoaded = Instance.new("Message")
-    notLoaded.Parent = COREGUI
-    notLoaded.Text = "MAD GYATTTTTTT Yield is waiting for the game to load"
     game.Loaded:Wait()
-    notLoaded:Destroy()
 end
 
 local ws = game:GetService("Workspace")
