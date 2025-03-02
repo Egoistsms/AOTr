@@ -171,7 +171,9 @@ end
 local function doFarm()
     if not _G.AutoFarm or c.refilling or not c.hum or c.hum.Health <= 0 or not c.tf then return end
 
-    for _, t in ipairs(c.tf:GetChildren()) do
+    local tt = c.tf:GetChildren()
+
+    for _, t in ipairs(tt) do
         local th = t:FindFirstChildOfClass("Humanoid")
         local hb = t:FindFirstChild("Hitboxes")
         local thrp = t:FindFirstChild("HumanoidRootPart")
@@ -180,6 +182,8 @@ local function doFarm()
         local weld = nape and (nape:FindFirstChildOfClass("Weld") or nape:FindFirstChildOfClass("WeldConstraint") or nape:FindFirstChildOfClass("Motor6D"))
         
         if weld then weld:Destroy() end
+
+        if #tt == 0 then return end
         
         if th and thrp and nape and th.Health > 0 and c.hrp then
             local hpos = thrp.Position
@@ -305,31 +309,6 @@ task.spawn(function()
         updGUI()
     end
 end)
-
-local unclimbable = ws:FindFirstChild("Unclimbable")
-local keepNames = {"Unclimbable", "Terrain", "Characters", "Titans"}
-
-ws.Terrain.Clouds:Destroy()
-
-for _, obj in ipairs(ws:GetChildren()) do
-    if not table.find(keepNames, obj.Name) then
-        obj:Destroy()
-    end
-end
-
-if unclimbable then
-    for _, obj in ipairs(unclimbable:GetChildren()) do
-        if obj.Name ~= "Reloads" then
-            obj:Destroy()
-        end
-    end
-end
-
-for _, obj in ipairs(ws:GetDescendants()) do
-    if obj:IsA("Texture") or obj:IsA("Decal") then
-        obj:Destroy()
-    end
-end
 
 _G.Ignore = {}
 _G.Settings = {
