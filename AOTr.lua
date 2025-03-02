@@ -376,3 +376,13 @@ _G.Settings = {
 	}
 }
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Egoistsms/AOTr/refs/heads/main/BOOSTFPS.lua"))()
+
+queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
+
+local TeleportCheck = false
+plrs.LocalPlayer..OnTeleport:Connect(function(State)
+	if ot TeleportCheck and queueteleport then
+		TeleportCheck = true
+		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Egoistsms/AOTr/refs/heads/main/AOTr.lua'))()")
+	end
+end)
