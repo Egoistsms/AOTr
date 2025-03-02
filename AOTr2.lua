@@ -1,9 +1,9 @@
---[[
+
 _G.AutoFarm = true
 _G.AutoRefill = true
 _G.AutoReplay = false
 _G.TitanRipper = true
-]]
+
 if not game:IsLoaded() then
     game.Loaded:Wait()
 end
@@ -116,7 +116,7 @@ local function delAnims()
 end
 
 local function doRefill()
-    if not _G.AutoRefill or not c.char or c.refilling then return end
+    if not _G.AutoRefill or not c.char then return end
     
     local rig = c.char:FindFirstChild("Rig_" .. c.lp.Name)
     if not rig then return end
@@ -127,7 +127,6 @@ local function doRefill()
                  (lh and lh:FindFirstChild("Blade_1"))
 
     if not blade then return end
-
     updGUI()
     if blade:GetAttribute("Broken") then
         if c.gui.blades == "0 / 3" or c.gui.spears == "0 / 8" then
@@ -160,6 +159,7 @@ end
 
 local function doReplay()
     if not _G.AutoReplay or not c.gui.retry or not c.gui.retry.Visible then return end
+    updGUI()
     if c.gui.retry.Visible then
         c.gui.retry.Size = UDim2.new(1000, 0, 1000, 0)
         vim:SendMouseButtonEvent(957, 800, 0, true, game, 0)
@@ -184,7 +184,7 @@ local function doFarm()
         if weld then weld:Destroy() end
 
         if #tt == 0 then return end
-        
+        updGUI()
         if th and thrp and nape and th.Health > 0 and c.hrp then
             local hpos = thrp.Position
             local hcf = thrp.CFrame
@@ -204,7 +204,7 @@ end
 
 local function ripTitans()
     if not _G.TitanRipper or c.refilling or not c.hum or c.hum.Health <= 0 or not c.tf or not c.gui.itf then return end
-    
+    updGUI()
     local s1cd, s2cd
     local hbpath = c.gui.itf:FindFirstChild("HUD") and 
                   c.gui.itf.HUD:FindFirstChild("Main") and 
@@ -266,8 +266,6 @@ rs.Stepped:Connect(function()
             if not c.char or not c.hrp or not c.hum then updChar() end
             if not c.tf then updTitans() end
 
-            updGUI()
-
             c.lp:SetAttribute("Max_Refills", MAX_REFILLS)
             c.lp:SetAttribute("Refills", MAX_REFILLS)
             
@@ -275,8 +273,10 @@ rs.Stepped:Connect(function()
             delAnims()
             doReplay()
             doRefill()
-            ripTitans()
-            doFarm()
+            if not c.refilling then
+                ripTitans()
+                doFarm()
+            end
         end)
     end)
 end)
