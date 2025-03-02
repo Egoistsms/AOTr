@@ -32,7 +32,8 @@ local c = {
     },
     enabled = true,
     refilling = false,
-    animConn = nil
+    animConn = nil,
+    ripping = false
 }
 
 local function updChar()
@@ -168,7 +169,7 @@ local function doReplay()
 end
 
 local function doFarm()
-    if not _G.AutoFarm or c.refilling or not c.hum or c.hum.Health <= 0 or not c.tf then return end
+    if not _G.AutoFarm or c.ripping or c.refilling or not c.hum or c.hum.Health <= 0 or not c.tf then return end
 
     local tt = c.tf:GetChildren()
 
@@ -244,13 +245,14 @@ local function ripTitans()
                 n.CFrame = c.hrp.CFrame
             end
         end
-        
+        c.ripping = true
         vim:SendKeyEvent(true, Enum.KeyCode.One, false, game)
         task.wait()
         vim:SendKeyEvent(false, Enum.KeyCode.One, false, game)
         vim:SendKeyEvent(true, Enum.KeyCode.Two, false, game)
         task.wait()
         vim:SendKeyEvent(false, Enum.KeyCode.Two, false, game)
+        c.ripping = false
     else
         pcall(doFarm)
     end
